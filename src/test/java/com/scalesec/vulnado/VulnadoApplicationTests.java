@@ -11,7 +11,8 @@ public class VulnadoApplicationTests {
 
 	@Test
 	public void contextLoads() {
+		// This is an empty test method, which is common for initial setup. 
+		// You can add specific tests here as your application grows.
 	}
 
 }
-
