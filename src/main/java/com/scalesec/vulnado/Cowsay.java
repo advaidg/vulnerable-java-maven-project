@@ -9,11 +9,11 @@ public class Cowsay {
 
   public static String run(String input) {
     // A condition where the field might not be initialized
-    if (input == null || input.isEmpty()) {
+    if (input == null || input.isEmpty()) 
       processBuilder = null;  // Simulating a case where processBuilder could remain null
-    } else {
+     else 
       processBuilder = new ProcessBuilder();
-    }
+    
 
     StringBuilder output = new StringBuilder();
 
