@@ -11,7 +11,7 @@ public class VulnadoApplicationTests {
 
 	@Test
 	public void contextLoads() {
+		// This method is empty as it's a placeholder for future testing logic.
 	}
 
 }
-
