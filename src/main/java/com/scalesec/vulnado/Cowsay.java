@@ -2,23 +2,21 @@ package com.scalesec.vulnado;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Optional;
 
-public class Cowsay {
-  private static ProcessBuilder processBuilder;  // Uninitialized field that may cause null pointer issues
+public abstract class Cowsay {
+
+  private Cowsay() {
+  }
 
   public static String run(String input) {
-    // A condition where the field might not be initialized
     if (input == null || input.isEmpty()) {
-      processBuilder = null;  // Simulating a case where processBuilder could remain null
-    } else {
-      processBuilder = new ProcessBuilder();
+      return "";
     }
 
     StringBuilder output = new StringBuilder();
 
     try {
-      // Potential null pointer dereference here if processBuilder is null
+      ProcessBuilder processBuilder = new ProcessBuilder();
       processBuilder.command("bash", "-c", "/usr/games/cowsay '" + input + "'");
 
       Process process = processBuilder.start();
