@@ -2,34 +2,42 @@ package com.scalesec.vulnado;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.Optional;
 
 public class Cowsay {
-  private static ProcessBuilder processBuilder;  // Uninitialized field that may cause null pointer issues
 
+  private static ProcessBuilder processBuilder = new ProcessBuilder();  // Safe Initialization
+  
   public static String run(String input) {
-    // A condition where the field might not be initialized
-    if (input == null || input.isEmpty()) 
-      processBuilder = null;  // Simulating a case where processBuilder could remain null
-     else 
-      processBuilder = new ProcessBuilder();
     
+    // Use Optional to handle null input more explicitly
+    Optional<String> optInput = Optional.ofNullable(input);
+    String validatedInput = optInput.filter(i -> !i.isEmpty()).orElse(null);
+    
+    // If input is invalid (null or empty), return a default message without causing errors
+    if (validatedInput == null) {
+      return "Invalid input. Please provide a valid message.";
+    }
 
     StringBuilder output = new StringBuilder();
 
     try {
-      // Potential null pointer dereference here if processBuilder is null
-      processBuilder.command("bash", "-c", "/usr/games/cowsay '" + input + "'");
+      // Safe command injection protection by avoiding direct String concatenation
+      processBuilder.command("/usr/games/cowsay", validatedInput);  
 
       Process process = processBuilder.start();
-      BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-      String line;
-      while ((line = reader.readLine()) != null) {
-        output.append(line).append("\n");
+      
+      // Use try-with-resources to handle potential resource leaks
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+          String line;
+          while ((line = reader.readLine()) != null) {
+              output.append(line).append("\n");
+          }
       }
 
-    } catch (Exception e) {
+    } catch (IOException e) {
+      // Stack trace for simplicity, should be replaced by a proper logging framework per enterprise standards
       e.printStackTrace();
     }
 
