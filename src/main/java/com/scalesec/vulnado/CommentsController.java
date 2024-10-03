@@ -6,29 +6,45 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.autoconfigure.*;
 import java.util.List;
 import java.io.Serializable;
+import java.util.Optional;
 
 @RestController
 @EnableAutoConfiguration
 public class CommentsController {
+
   @Value("${app.secret}")
   private String secret;
 
   @CrossOrigin(origins = "*")
   @RequestMapping(value = "/comments", method = RequestMethod.GET, produces = "application/json")
   List<Comment> comments(@RequestHeader(value="x-auth-token") String token) {
-    User.assertAuth(secret, token);
+    // Implement proper authorization logic here
+    // This example uses a simple token check
+    if (!secret.equals(token)) {
+      throw new BadRequest("Invalid or missing authentication token");
+    }
     return Comment.fetch_all();
   }
 
   @CrossOrigin(origins = "*")
   @RequestMapping(value = "/comments", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
   Comment createComment(@RequestHeader(value="x-auth-token") String token, @RequestBody CommentRequest input) {
+    // Implement proper authorization logic here
+    // This example uses a simple token check
+    if (!secret.equals(token)) {
+      throw new BadRequest("Invalid or missing authentication token");
+    }
     return Comment.create(input.username, input.body);
   }
 
   @CrossOrigin(origins = "*")
   @RequestMapping(value = "/comments/{id}", method = RequestMethod.DELETE, produces = "application/json")
   Boolean deleteComment(@RequestHeader(value="x-auth-token") String token, @PathVariable("id") String id) {
+    // Implement proper authorization logic here
+    // This example uses a simple token check
+    if (!secret.equals(token)) {
+      throw new BadRequest("Invalid or missing authentication token");
+    }
     return Comment.delete(id);
   }
 }
